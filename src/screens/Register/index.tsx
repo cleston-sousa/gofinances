@@ -19,14 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import uuid from 'react-native-uuid';
 
-import {
-  Container,
-  Fields,
-  Form,
-  Header,
-  Title,
-  TransactionsTypes
-} from './styles';
+import { Container, Fields, Form, Header, Title, TransactionsTypes } from './styles';
 
 interface FormData extends FieldValues {
   name: string;
@@ -35,11 +28,7 @@ interface FormData extends FieldValues {
 
 const schema = yup.object().shape({
   name: yup.string().required('nome é obrigatorio'),
-  amount: yup
-    .number()
-    .typeError('informe apenas numeros')
-    .positive('apenas positiov')
-    .required('valor obriatorio')
+  amount: yup.number().typeError('informe apenas numeros').positive('apenas positiov').required('valor obriatorio')
 });
 
 export function Register() {
@@ -80,8 +69,7 @@ export function Register() {
   async function handleRegister(form: FormData) {
     if (!transactionType) return Alert.alert('selecione o tipo da transacao');
 
-    if (category.key === 'category')
-      return Alert.alert('selecione a categoria');
+    if (category.key === 'category') return Alert.alert('selecione a categoria');
 
     const newTransaction = {
       id: String(uuid.v4()),
@@ -118,7 +106,6 @@ export function Register() {
   useEffect(() => {
     async function loadData() {
       const data = await AsyncStorage.getItem(dataKey);
-      console.log(JSON.parse(data!));
     }
 
     loadData();
@@ -130,11 +117,7 @@ export function Register() {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      containerStyle={{ flex: 1 }}
-      style={{ flex: 1 }}
-    >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} containerStyle={{ flex: 1 }} style={{ flex: 1 }}>
       <Container>
         <Header>
           <Title>Cadastro</Title>
@@ -171,10 +154,7 @@ export function Register() {
                 isActive={transactionType === 'negative'}
               />
             </TransactionsTypes>
-            <CategorySelectButton
-              title={category.name}
-              onPress={handleOpenSelectCategoryModal}
-            />
+            <CategorySelectButton title={category.name} onPress={handleOpenSelectCategoryModal} />
           </Fields>
           {/* <Button title="RemoveAll" onPress={removeAll} /> */}
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
