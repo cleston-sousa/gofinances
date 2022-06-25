@@ -3,9 +3,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 import { VictoryPie } from 'victory-native';
+import { addMonths, subMonths, format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import { HistoryCard } from '../../components/HistoryCard';
-import { ChartContainer, Container, Content, Header, Title } from './styles';
+import {
+  ChartContainer,
+  Container,
+  Content,
+  Header,
+  Month,
+  MonthSelect,
+  MonthSelectButton,
+  MonthSelectIcon,
+  Title
+} from './styles';
 import { TransactionProps } from '../Dashboard';
 import { LoadContainer } from '../Dashboard/styles';
 import { ActivityIndicator } from 'react-native';
@@ -31,15 +43,29 @@ export function Resume() {
 
   const theme = useTheme();
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  function handleDateChange(action: 'next' | 'prev') {
+    setIsLoading(true);
+    if (action === 'next') {
+      setSelectedDate(addMonths(selectedDate, 1));
+    } else {
+      setSelectedDate(subMonths(selectedDate, 1));
+    }
+  }
+
   async function loadTransactions() {
     const storagePlainResult = await AsyncStorage.getItem(storageKey);
     const storageItemList = storagePlainResult ? JSON.parse(storagePlainResult) : [];
 
     //const outcomeTransactions: TransactionProps[] = storageItemList;
 
-    const outcomeTransactions: TransactionProps[] = storageItemList.filter(
-      (item: TransactionProps) => item.type === 'negative'
-    );
+    const outcomeTransactions: TransactionProps[] = storageItemList.filter((item: TransactionProps) => {
+      const itemDate = new Date(item.date);
+      const sameMonthYear =
+        itemDate.getMonth() === selectedDate.getMonth() && itemDate.getFullYear() === selectedDate.getFullYear();
+      return item.type === 'negative' && sameMonthYear;
+    });
 
     const totalGlobal = outcomeTransactions.reduce((acumullator: number, item: TransactionProps) => {
       return acumullator + Number(item.amount);
@@ -77,7 +103,7 @@ export function Resume() {
 
   useEffect(() => {
     loadTransactions();
-  }, []);
+  }, [selectedDate]);
 
   useFocusEffect(
     useCallback(() => {
@@ -87,17 +113,26 @@ export function Resume() {
 
   return (
     <Container>
+      <Header>
+        <Title>Resumo por categoria</Title>
+      </Header>
       {isLoading ? (
         <LoadContainer>
           <ActivityIndicator color={theme.colors.secondary} size="large" />
         </LoadContainer>
       ) : (
         <>
-          <Header>
-            <Title>Resumo por categoria</Title>
-          </Header>
-
           <Content>
+            <MonthSelect>
+              <MonthSelectButton onPress={() => handleDateChange('prev')}>
+                <MonthSelectIcon name="chevron-left" />
+              </MonthSelectButton>
+              <Month>{format(selectedDate, 'MMMM, yyyy', { locale: ptBR })}</Month>
+              <MonthSelectButton onPress={() => handleDateChange('next')}>
+                <MonthSelectIcon name="chevron-right" />
+              </MonthSelectButton>
+            </MonthSelect>
+
             <ChartContainer>
               <VictoryPie
                 data={totalCategories}
