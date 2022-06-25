@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { ActivityIndicator } from 'react-native';
+import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme } from 'styled-components';
 
 import HighlightCard from '../../components/HighlightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
@@ -20,10 +18,10 @@ import {
   Transactions,
   Title,
   TransactionList,
-  LogoutButton,
-  LoadContainer
+  LogoutButton
 } from './styles';
 import { numberToCurrencyLocaleString, timestampToDateLocaleString } from '../../utils/parse';
+import { LoadContainer } from '../../components/LoadContainer';
 
 export interface TransactionProps extends TransactionCardProps {
   id: string;
@@ -42,8 +40,6 @@ interface HighlightTransactions {
 
 export function Dashboard() {
   const storageKey = '@gofinances:transactions';
-
-  const theme = useTheme();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -146,36 +142,35 @@ export function Dashboard() {
 
   return (
     <Container>
+      <Header>
+        <UserWrapper>
+          <UserInfo>
+            <Photo
+              source={{
+                uri: 'https://avatars.githubusercontent.com/u/26007139?v=4'
+              }}
+            />
+            <User>
+              <UserGreeting>Yo,</UserGreeting>
+              <UserName>Noid!</UserName>
+            </User>
+          </UserInfo>
+
+          <LogoutButton
+            onPress={() => {
+              removeAll();
+              console.log('saiu');
+            }}
+          >
+            <Icon name="power" />
+          </LogoutButton>
+        </UserWrapper>
+      </Header>
+
       {isLoading ? (
-        <LoadContainer>
-          <ActivityIndicator color={theme.colors.secondary} size="large" />
-        </LoadContainer>
+        <LoadContainer />
       ) : (
         <>
-          <Header>
-            <UserWrapper>
-              <UserInfo>
-                <Photo
-                  source={{
-                    uri: 'https://avatars.githubusercontent.com/u/26007139?v=4'
-                  }}
-                />
-                <User>
-                  <UserGreeting>Yo,</UserGreeting>
-                  <UserName>Noid!</UserName>
-                </User>
-              </UserInfo>
-
-              <LogoutButton
-                onPress={() => {
-                  removeAll();
-                  console.log('saiu');
-                }}
-              >
-                <Icon name="power" />
-              </LogoutButton>
-            </UserWrapper>
-          </Header>
           <HighlightCards>
             <HighlightCard
               title="Entradas"

@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
-import { VictoryPie } from 'victory-native';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { addMonths, subMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { VictoryPie } from 'victory-native';
 
-import { HistoryCard } from '../../components/HistoryCard';
 import {
   ChartContainer,
   Container,
@@ -19,11 +19,10 @@ import {
   Title
 } from './styles';
 import { TransactionProps } from '../Dashboard';
-import { LoadContainer } from '../Dashboard/styles';
-import { ActivityIndicator } from 'react-native';
+import { HistoryCard } from '../../components/HistoryCard';
+import { LoadContainer } from '../../components/LoadContainer';
 import { categories } from '../../utils/categories';
 import { numberToCurrencyLocaleString } from '../../utils/parse';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 interface CategoryResumeProps {
   key: string;
@@ -114,9 +113,7 @@ export function Resume() {
         <Title>Resumo por categoria</Title>
       </Header>
       {isLoading ? (
-        <LoadContainer>
-          <ActivityIndicator color={theme.colors.secondary} size="large" />
-        </LoadContainer>
+        <LoadContainer />
       ) : (
         <>
           <Content>
