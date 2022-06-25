@@ -4,15 +4,11 @@ import 'intl/locale-data/jsonp/pt-BR';
 
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { StatusBar } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
 
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold
-} from '@expo-google-fonts/poppins';
+import { useFonts, Poppins_400Regular, Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 import theme from './src/screens/global/styles/theme';
 
@@ -38,6 +34,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
         <NavigationContainer>
+          <StatusBar barStyle="light-content" />
           <AppRoutes />
         </NavigationContainer>
       </ThemeProvider>
