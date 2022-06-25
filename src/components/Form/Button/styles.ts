@@ -1,8 +1,9 @@
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { RectButton } from 'react-native-gesture-handler';
+import { ReactNode } from 'react';
 
-export const Container = styled(RectButton)`
+export const Container = styled(RectButton)<{ children: ReactNode }>`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 5px;
