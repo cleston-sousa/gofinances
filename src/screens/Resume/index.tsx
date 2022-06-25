@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
@@ -37,7 +37,7 @@ interface CategoryResumeProps {
 export function Resume() {
   const storageKey = '@gofinances:transactions';
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [totalCategories, setTotalCategories] = useState<CategoryResumeProps[]>([]);
 
@@ -46,7 +46,6 @@ export function Resume() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   function handleDateChange(action: 'next' | 'prev') {
-    setIsLoading(true);
     if (action === 'next') {
       setSelectedDate(addMonths(selectedDate, 1));
     } else {
@@ -55,6 +54,8 @@ export function Resume() {
   }
 
   async function loadTransactions() {
+    setIsLoading(true);
+
     const storagePlainResult = await AsyncStorage.getItem(storageKey);
     const storageItemList = storagePlainResult ? JSON.parse(storagePlainResult) : [];
 
@@ -101,14 +102,10 @@ export function Resume() {
     setIsLoading(false);
   }
 
-  useEffect(() => {
-    loadTransactions();
-  }, [selectedDate]);
-
   useFocusEffect(
     useCallback(() => {
       loadTransactions();
-    }, [])
+    }, [selectedDate])
   );
 
   return (

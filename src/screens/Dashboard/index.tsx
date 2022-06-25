@@ -45,7 +45,7 @@ export function Dashboard() {
 
   const theme = useTheme();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [transactionsList, setTransactionsList] = useState<TransactionProps[]>([]);
 
@@ -75,6 +75,8 @@ export function Dashboard() {
   }
 
   async function loadTransactions() {
+    setIsLoading(true);
+
     const storagePlainResult = await AsyncStorage.getItem(storageKey);
     const storageItemList = storagePlainResult ? JSON.parse(storagePlainResult) : [];
 
@@ -131,10 +133,6 @@ export function Dashboard() {
 
     setIsLoading(false);
   }
-
-  useEffect(() => {
-    loadTransactions();
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
