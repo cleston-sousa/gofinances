@@ -23,6 +23,7 @@ import {
   LogoutButton,
   LoadContainer
 } from './styles';
+import { numberToCurrencyLocaleString, timestampToDateLocaleString } from '../../utils/parse';
 
 export interface TransactionProps extends TransactionCardProps {
   id: string;
@@ -52,22 +53,14 @@ export function Dashboard() {
     {} as HighlightTransactions
   );
 
-  function numberToCurrencyLocaleString(value: number) {
-    return value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    });
-  }
-
-  function timestampToDateLocaleString(value: number | string, format: Intl.DateTimeFormatOptions) {
-    const date = new Date(value);
-    return Intl.DateTimeFormat('pt-BR', format).format(date);
-  }
-
   function getLastTransaction(collection: TransactionProps[], type?: TransactionCardProps['type']) {
     let transactionList = collection;
     if (typeof type !== 'undefined') {
       transactionList = collection.filter((item) => item.type === type);
+    }
+
+    if (!(transactionList.length > 0)) {
+      return '';
     }
 
     const timestampList = transactionList.map((item) => new Date(item.date).getTime());
@@ -149,6 +142,10 @@ export function Dashboard() {
     }, [])
   );
 
+  async function removeAll() {
+    await AsyncStorage.removeItem(storageKey);
+  }
+
   return (
     <Container>
       {isLoading ? (
@@ -173,6 +170,7 @@ export function Dashboard() {
 
               <LogoutButton
                 onPress={() => {
+                  removeAll();
                   console.log('saiu');
                 }}
               >

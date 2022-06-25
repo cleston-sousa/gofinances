@@ -103,19 +103,6 @@ export function Register() {
     }
   }
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
-    }
-
-    loadData();
-  }, []);
-
-  async function removeAll() {
-    await AsyncStorage.removeItem(dataKey);
-    console.log('limpo');
-  }
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} containerStyle={{ flex: 1 }} style={{ flex: 1 }}>
       <Container>
