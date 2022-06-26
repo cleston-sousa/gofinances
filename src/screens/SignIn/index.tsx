@@ -10,9 +10,19 @@ import GoogleSvg from '../../assets/google.svg';
 import AppleSvg from '../../assets/apple.svg';
 
 import { useAuth } from '../../hooks/auth';
+import { Alert } from 'react-native';
 
 export function SignIn() {
-  const data = useAuth();
+  const { signinGoogle } = useAuth();
+
+  async function handleSigninGoogle() {
+    try {
+      await signinGoogle();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Nao foi');
+    }
+  }
 
   return (
     <Container>
@@ -27,7 +37,7 @@ export function SignIn() {
       </Header>
       <Footer>
         <FooterWrapper>
-          <SignInSocialButton svg={GoogleSvg} title="Entrar com Google" />
+          <SignInSocialButton svg={GoogleSvg} title="Entrar com Google" onPress={handleSigninGoogle} />
           <SignInSocialButton svg={AppleSvg} title="Entrar com Apple" />
         </FooterWrapper>
       </Footer>
