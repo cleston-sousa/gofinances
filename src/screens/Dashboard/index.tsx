@@ -10,7 +10,6 @@ import {
   Header,
   UserWrapper,
   UserInfo,
-  Photo,
   User,
   UserGreeting,
   UserName,
@@ -42,9 +41,9 @@ interface HighlightTransactions {
 }
 
 export function Dashboard() {
-  const storageKey = '@gofinances:transactions';
-
   const { signout, user } = useAuth();
+
+  const storageKey = `@gofinances:transactions_ser:${user.id}`;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -143,6 +142,7 @@ export function Dashboard() {
 
   async function removeAll() {
     await AsyncStorage.removeItem(storageKey);
+    console.log('cleared storage');
   }
 
   function handleLogout() {

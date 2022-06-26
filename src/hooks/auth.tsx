@@ -74,7 +74,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       const authUrl =
         auth_token_url +
-        `?client_id=${google_client_id}&redirect_uri=${google_redirect_uri}&response_type=${response_type}&scope=${scope}`;
+        `?prompt=select_account&client_id=${google_client_id}&redirect_uri=${google_redirect_uri}&response_type=${response_type}&scope=${scope}`;
 
       const { type, params } = (await AuthSession.startAsync({ authUrl })) as AuthorizationResponse;
 

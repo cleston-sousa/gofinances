@@ -7,6 +7,14 @@ import { addMonths, subMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { VictoryPie } from 'victory-native';
 
+import { useAuth } from '../../hooks/auth';
+
+import { TransactionProps } from '../Dashboard';
+import { HistoryCard } from '../../components/HistoryCard';
+import { LoadContainer } from '../../components/LoadContainer';
+import { categories } from '../../utils/categories';
+import { numberToCurrencyLocaleString } from '../../utils/parse';
+
 import {
   ChartContainer,
   Container,
@@ -18,11 +26,6 @@ import {
   MonthSelectIcon,
   Title
 } from './styles';
-import { TransactionProps } from '../Dashboard';
-import { HistoryCard } from '../../components/HistoryCard';
-import { LoadContainer } from '../../components/LoadContainer';
-import { categories } from '../../utils/categories';
-import { numberToCurrencyLocaleString } from '../../utils/parse';
 
 interface CategoryResumeProps {
   key: string;
@@ -34,7 +37,9 @@ interface CategoryResumeProps {
 }
 
 export function Resume() {
-  const storageKey = '@gofinances:transactions';
+  const { user } = useAuth();
+
+  const storageKey = `@gofinances:transactions_ser:${user.id}`;
 
   const [isLoading, setIsLoading] = useState(false);
 

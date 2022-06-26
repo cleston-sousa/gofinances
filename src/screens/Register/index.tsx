@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import * as yup from 'yup';
 import { useForm, FieldValues } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
-
+import uuid from 'react-native-uuid';
 import { Keyboard, Modal, Alert } from 'react-native';
-import { InputForm } from '../../components/Form/InputForm';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useAuth } from '../../hooks/auth';
+
+import { InputForm } from '../../components/Form/InputForm';
 import { Button } from '../../components/Form/Button';
 import { CategorySelectButton } from '../../components/Form/CategorySelectButton';
 import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton';
-
 import { CategorySelect } from '../CategorySelect';
-
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import uuid from 'react-native-uuid';
 
 import { Container, Fields, Form, Header, Title, TransactionsTypes } from './styles';
 
@@ -32,7 +29,9 @@ const schema = yup.object().shape({
 });
 
 export function Register() {
-  const dataKey = '@gofinances:transactions';
+  const { user } = useAuth();
+
+  const storageKey = `@gofinances:transactions_ser:${user.id}`;
 
   const [transactionType, setTransactionType] = useState('');
 
@@ -81,11 +80,11 @@ export function Register() {
     };
 
     try {
-      const data = await AsyncStorage.getItem(dataKey);
+      const data = await AsyncStorage.getItem(storageKey);
       const currentData = data ? JSON.parse(data) : [];
       const dataFormatted = [...currentData, newTransaction];
 
-      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(storageKey, JSON.stringify(dataFormatted));
 
       reset();
 
