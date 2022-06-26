@@ -7,7 +7,11 @@ import { AppRoutes } from './app.routes';
 
 import { useAuth } from '../hooks/auth';
 
-export function Routes() {
+interface Props {
+  onReady?: () => void;
+}
+
+export function Routes({ onReady }: Props) {
   const { user } = useAuth();
-  return <NavigationContainer>{user.id ? <AppRoutes /> : <PublicRoutes />}</NavigationContainer>;
+  return <NavigationContainer onReady={onReady}>{user.id ? <AppRoutes /> : <PublicRoutes />}</NavigationContainer>;
 }

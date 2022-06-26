@@ -2,11 +2,11 @@ import 'react-native-gesture-handler';
 import 'intl';
 import 'intl/locale-data/jsonp/pt-BR';
 
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { StatusBar } from 'react-native';
 
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { useFonts, Poppins_400Regular, Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
@@ -27,9 +27,26 @@ export default function App() {
 
   const { isUserLoading } = useAuth();
 
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded && !isUserLoading) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, isUserLoading]);
+
   if (!fontsLoaded || isUserLoading) {
-    console.log('loading....');
-    return <AppLoading />;
+    return null;
   }
 
   return (
@@ -37,7 +54,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <StatusBar barStyle="light-content" />
         <AuthProvider>
-          <Routes />
+          <Routes onReady={onLayoutRootView} />
         </AuthProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
