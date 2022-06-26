@@ -69,3 +69,4 @@ results
 build
 .grunt
 
+.env
