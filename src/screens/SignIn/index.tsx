@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, Platform } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useTheme } from 'styled-components';
 
 import { Container, Footer, FooterWrapper, Header, SignInTitle, Title, TitleWrapper } from './styles';
 
@@ -10,17 +12,33 @@ import GoogleSvg from '../../assets/google.svg';
 import AppleSvg from '../../assets/apple.svg';
 
 import { useAuth } from '../../hooks/auth';
-import { Alert } from 'react-native';
 
 export function SignIn() {
-  const { signinGoogle } = useAuth();
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const theme = useTheme();
+
+  const { signinGoogle, signinApple } = useAuth();
 
   async function handleSigninGoogle() {
     try {
+      setIsAuthenticating(true);
       await signinGoogle();
     } catch (error) {
       console.log(error);
-      Alert.alert('Nao foi');
+      Alert.alert('Nao foi Google');
+      setIsAuthenticating(false);
+    }
+  }
+
+  async function handleSigninApple() {
+    try {
+      setIsAuthenticating(true);
+      await signinApple();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Nao foi Apple');
+      setIsAuthenticating(false);
     }
   }
 
@@ -36,10 +54,15 @@ export function SignIn() {
         <SignInTitle>Faça seu login com {'\n'}uma das contas abaixo</SignInTitle>
       </Header>
       <Footer>
-        <FooterWrapper>
-          <SignInSocialButton svg={GoogleSvg} title="Entrar com Google" onPress={handleSigninGoogle} />
-          <SignInSocialButton svg={AppleSvg} title="Entrar com Apple" />
-        </FooterWrapper>
+        {!isAuthenticating && (
+          <FooterWrapper>
+            <SignInSocialButton svg={GoogleSvg} title="Entrar com Google" onPress={handleSigninGoogle} />
+            {Platform.OS === 'ios' && (
+              <SignInSocialButton svg={AppleSvg} title="Entrar com Apple" onPress={handleSigninApple} />
+            )}
+          </FooterWrapper>
+        )}
+        {isAuthenticating && <ActivityIndicator color={theme.colors.shape} size="large" style={{ marginTop: 18 }} />}
       </Footer>
     </Container>
   );

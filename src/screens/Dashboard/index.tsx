@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserAvatar from 'react-native-user-avatar';
 
 import HighlightCard from '../../components/HighlightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
@@ -22,6 +23,8 @@ import {
 } from './styles';
 import { numberToCurrencyLocaleString, timestampToDateLocaleString } from '../../utils/parse';
 import { LoadContainer } from '../../components/LoadContainer';
+import { useAuth } from '../../hooks/auth';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export interface TransactionProps extends TransactionCardProps {
   id: string;
@@ -40,6 +43,8 @@ interface HighlightTransactions {
 
 export function Dashboard() {
   const storageKey = '@gofinances:transactions';
+
+  const { signout, user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -140,28 +145,23 @@ export function Dashboard() {
     await AsyncStorage.removeItem(storageKey);
   }
 
+  function handleLogout() {
+    signout();
+  }
+
   return (
     <Container>
       <Header>
         <UserWrapper>
           <UserInfo>
-            <Photo
-              source={{
-                uri: 'https://avatars.githubusercontent.com/u/26007139?v=4'
-              }}
-            />
+            <UserAvatar size={RFValue(48)} name={user.name} src={user.photo} />
             <User>
               <UserGreeting>Yo,</UserGreeting>
-              <UserName>Noid!</UserName>
+              <UserName>{user.name}!</UserName>
             </User>
           </UserInfo>
 
-          <LogoutButton
-            onPress={() => {
-              removeAll();
-              console.log('saiu');
-            }}
-          >
+          <LogoutButton onPress={handleLogout}>
             <Icon name="power" />
           </LogoutButton>
         </UserWrapper>

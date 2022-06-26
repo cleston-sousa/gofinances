@@ -11,13 +11,13 @@ import { Register } from '../screens/Register';
 import { useTheme } from 'styled-components';
 import { Resume } from '../screens/Resume';
 
-export type RootStackParamList = {
+export type AppRoutesParamList = {
   Listagem: undefined;
   Cadastrar: undefined;
   Resumo: undefined;
 };
 
-const { Navigator, Screen } = createBottomTabNavigator<RootStackParamList>();
+const { Navigator, Screen } = createBottomTabNavigator<AppRoutesParamList>();
 
 export function AppRoutes() {
   const theme = useTheme();
