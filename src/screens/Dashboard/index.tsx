@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserAvatar from 'react-native-user-avatar';
+import { useTheme } from 'styled-components/native';
 
 import HighlightCard from '../../components/HighlightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
@@ -44,6 +45,8 @@ export function Dashboard() {
   const { signout, user } = useAuth();
 
   const storageKey = `@gofinances:transactions_ser:${user.id}`;
+
+  const theme = useTheme();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -154,7 +157,7 @@ export function Dashboard() {
       <Header>
         <UserWrapper>
           <UserInfo>
-            <UserAvatar size={RFValue(48)} name={user.name} src={user.photo} />
+            <UserAvatar size={RFValue(48)} name={user.name} src={user.photo} bgColor={theme.colors.shape} />
             <User>
               <UserGreeting>Yo,</UserGreeting>
               <UserName>{user.name}!</UserName>
